@@ -201,16 +201,153 @@ h1 {
             border-radius: 4px;
             display: inline-block;
         }
+          /* Add animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Apply animation to result container */
+    .result-container {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Add animation to validation button */
+    @keyframes buttonPulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(88, 166, 255, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 15px 10px rgba(88, 166, 255, 0);
+        }
+    }
+
+    .validate-btn {
+        animation: buttonPulse 2s infinite;
+    }
+
+    /* Smoothly fade in the validator container */
+    .validator-container {
+        opacity: 0;
+        transform: scale(0.95);
+        animation: fadeIn 0.8s ease forwards;
+    }
+
+    /* Delay the animation for a smoother effect */
+    body {
+        animation: fadeIn 1s ease-in;
+    }
+    /* Adjust the overall padding and layout for smaller screens */
+body {
+    padding: 20px 15px;
+}
+
+/* Make the validator container responsive */
+.validator-container {
+    max-width: 100%; /* Ensure it doesn't exceed screen width */
+    width: 90%; /* Allow flexibility */
+    padding: 30px; /* Reduce padding on smaller screens */
+    margin: 20px auto; /* Ensure proper spacing from screen edges */
+}
+
+/* Responsive typography */
+h1 {
+    font-size: 1.8rem; /* Reduce font size for smaller screens */
+}
+
+/* Code input field adjustment for smaller devices */
+#codeInput {
+    font-size: 14px; /* Reduce font size */
+    min-height: 300px; /* Adjust height */
+    margin-left: 6px;
+    padding: 20px; /* Reduce padding */
+}
+
+/* Validation button adjustments */
+.validate-btn {
+    padding: 12px; /* Reduce padding */
+    font-size: 14px; /* Adjust font size */
+    margin-top: 15px; /* Adjust spacing */
+}
+
+/* Result container adjustments */
+.result-container {
+    max-height: 300px; /* Reduce height for smaller screens */
+    padding: 20px; /* Adjust padding */
+}
+
+/* Responsive grid layout for the color legend */
+.color-legend {
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    gap: 15px; /* Add spacing between elements */
+    justify-content: center; /* Center elements */
+}
+
+.color-box {
+    margin-bottom: 10px; /* Add spacing between rows */
+    font-size: 12px; /* Adjust font size */
+}
+
+/* Add media queries for breakpoints */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    #codeInput {
+        min-height: 250px;
+    }
+
+    .validate-btn {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .result-container {
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+
+    .validator-container {
+        padding: 20px;
+    }
+
+    .validate-btn {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    #codeInput {
+        font-size: 12px;
+        min-height: 200px;
+    }
+
+    .color-box span {
+        width: 12px;
+        height: 12px;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="validator-container">
         <h4 id="created-by" style="text-align: center; color: #777777a4;">Create By Houssam Ghmari & claude </h4>
         <h1> AUREL&nbsp; &nbsp;JavaScript Checker</h1>
-        <h4 id="created-by" style="text-align: center; color: rgba(255,255,255,0.34);">AUREL CAN MAKE MISTAKES <br> Beta 0.1 V </h4>
+        <h4 id="created-by" style="text-align: center; color: rgba(255,255,255,0.34);">AUREL Can make mistakes<br>V 0 . 5</h4>
         <br>
         <br>
-        <h4 style="#777777a4">* App Is Not Responsive Use Your Pc </h4>
         <!-- Legend Section -->
         <div class="color-legend">
             <div class="color-box color-error">
