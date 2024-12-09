@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional JavaScript Syntax Validator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.5/jshint.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+:root {
+    /* Advanced Color Palette */
+    --bg-primary: #0d1117; /* Deep dark slate */
+    --bg-secondary: #161b22; /* Slightly lighter dark slate */
+    --text-primary: #c9d1d9; /* Soft light gray */
+    --text-accent: #58a6ff; /* Vibrant blue accent */
+    --error-color: #f85149; /* Bright red for errors */
+    --warning-color: #e3b341; /* Muted gold for warnings */
+    --success-color: #3fb950; /* Vibrant green for success */
+    --border-color: #30363d; /* Muted gray for borders */
+    
+    /* Typography */
+    --font-primary: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
+    --font-code: 'Source Code Pro', 'Fira Code', monospace;
+}
+
+body {
+    background: linear-gradient(145deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    line-height: 1.8;
+    margin: 0;
+    padding: 50px 30px;
+}
+
+.validator-container {
+    background-color: rgba(22, 27, 34, 0.9);
+    border-radius: 18px;
+    max-width: 1200px;
+    width: 500px;
+    margin: 0 auto;
+    padding: 50px;
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.3), 
+        0 15px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.validator-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.4), 
+        0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    color: white;
+    font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  text-align: center;
+    letter-spacing: -0.8px;
+    background: linear-gradient(100deg, var(--text-accent) 0%, #89d1ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#codeInput {
+    width: 100%;
+    min-height: 520px;
+    background-color: rgba(38, 50, 56, 0.85);
+    color: var(--text-accent);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    padding: 25px;
+    font-family: var(--font-code);
+    font-size: 16px;
+    line-height: 1.75;
+    resize: vertical;
+    transition: all 0.4s ease;
+    outline: none;
+    box-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.15);
+    position: relative;
+    right: 28px;
+}
+
+#codeInput:focus {
+    border-color: var(--text-accent);
+    box-shadow: 
+        0 0 0 4px rgba(88, 166, 255, 0.25),
+        inset 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+#created-by {
+    font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.validate-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin-top: 25px;
+    background: linear-gradient(135deg, var(--text-accent) 0%, #4a90e2 100%);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 12px 24px rgba(88, 166, 255, 0.25);
+}
+
+.validate-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 20px 40px rgba(88, 166, 255, 0.35), 
+        0 8px 16px rgba(88, 166, 255, 0.25);
+}
+
+.result-container {
+    margin-top: 30px;
+    background-color: rgba(38, 50, 56, 0.7);
+    border-radius: 14px;
+    padding: 25px;
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+}
+
+/* Alerts */
+.error, .warning, .success {
+    font-weight: 500;
+    border-left: 4px solid;
+    padding-left: 12px;
+    margin-bottom: 12px;
+}
+
+.error {
+    color: var(--error-color);
+    border-color: var(--error-color);
+}
+
+.warning {
+    color: var(--warning-color);
+    border-color: var(--warning-color);
+}
+
+.success {
+    color: var(--success-color);
+    font-weight: 600;
+    border-color: var(--success-color);
+}
+
+/* Scrollbar Styling */
+.result-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.result-container::-webkit-scrollbar-track {
+    background: rgba(38, 50, 56, 0.5);
+}
+
+.result-container::-webkit-scrollbar-thumb {
+    background: var(--text-accent);
+    border-radius: 6px;
+}
+        .color-error span {
+            background-color: var(--error-color);
+        }
+
+        .color-warning span {
+            background-color: var(--warning-color);
+        }
+
+        .color-success span {
+            background-color: var(--success-color);
+        }
+        .color-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .color-box {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .color-box span {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="validator-container">
+        <h4 id="created-by" style="text-align: center; color: #777777a4;">Create By Houssam Ghmari & claude Ai</h4>
+        <h1> AUREL&nbsp; &nbsp;JavaScript Checker</h1>
+        <h4 id="created-by" style="text-align: center; color: rgba(255,255,255,0.34);">AUREL CAN MAKE MISTAKES <br> Beta 0.1 V </h4>
+        <br>
+        <!-- Legend Section -->
+        <div class="color-legend">
+            <div class="color-box color-error">
+                <span></span> Error Detected
+            </div>
+            <div class="color-box color-warning">
+                <span></span> ES6 usage is Detected
+            </div>
+            <div class="color-box color-success">
+                <span></span> Succeeded Code
+            </div>
+        </div>
+        <br>
+        <textarea id="codeInput" placeholder="Your Code Goes Here ..."></textarea>
+        <button id="validateBtn" class="validate-btn">Check Your Code</button>
+        
+        <div id="syntaxResults" class="result-container"></div>
+    </div>
+    <div id="ftr">
+
+    </div>
+
+    <script>
+        class ComprehensiveSyntaxValidator {
+            constructor() {
+                this.codeInput = document.getElementById('codeInput');
+                this.validateBtn = document.getElementById('validateBtn');
+                this.resultsContainer = document.getElementById('syntaxResults');
+
+                this.validateBtn.addEventListener('click', () => this.validateCode());
+            }
+
+            validateCode() {
+                // Clear previous results
+                this.resultsContainer.innerHTML = '';
+
+                const code = this.codeInput.value.trim();
+                if (!code) {
+                    this.displayError('No code provided for validation.');
+                    return;
+                }
+
+                try {
+                    // JSHINT configuration
+                    JSHINT(code, {
+                        esversion: 12, // Latest ECMAScript version
+                        browser: true,
+                        node: true,
+                        devel: true,
+                        asi: false,
+                        bitwise: true,
+                        curly: true,
+                        eqeqeq: true,
+                        forin: true,
+                        freeze: true,
+                        futurehostile: true,
+                        latedef: true,
+                        maxcomplexity: 10,
+                        maxdepth: 4,
+                        maxlen: 120,
+                        maxparams: 4,
+                        noarg: true,
+                        nocomma: true,
+                        nonew: true,
+                        predef: [
+                            'window', 'document', 'console',
+                            'setTimeout', 'clearTimeout',
+                            'Promise', 'fetch', 'Map', 'Set'
+                        ]
+                    });
+
+                    if (JSHINT.errors.length === 0) {
+                        this.displaySuccess('✓ Syntax is completely valid!');
+                    } else {
+                        JSHINT.errors.forEach(error => {
+                            if (error) {
+                                this.displayError(`Line ${error.line}: ${error.reason}`);
+                            }
+                        });
+                    }
+
+                    // Perform detailed analysis
+                    this.performDetailedAnalysis(code);
+                } catch (e) {
+                    this.displayError(`Unexpected validation error: ${e.message}`);
+                }
+            }
+
+            performDetailedAnalysis(code) {
+                const analyses = [
+                    {
+                        name: 'ES6+ Feature Usage',
+                        checks: [
+                            { regex: /class\s+\w+/, message: 'ES6 class detected' },
+                            { regex: /=>\s*{/, message: 'Arrow function usage found' },
+                            { regex: /const\s+\w+\s*=/, message: 'Const variable declaration' },
+                            { regex: /let\s+\w+\s*=/, message: 'Let variable declaration detected' }
+                        ]
+                    },
+                    {
+                        name: 'Improper Console Log Usage',
+                        checks: [
+                            {
+                                regex: /console\.log\((.*=.*)\)/,
+                                message: 'Assignment detected within console.log(). This might be unintended or unclear.'
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Potential Performance Concerns',
+                        checks: [
+                            { regex: /\.forEach\s*\(/, message: 'Potential performance issue with forEach' },
+                            { regex: /eval\s*\(/, message: 'Dangerous eval() usage detected' }
+                        ]
+                    },
+                    {
+                        name: 'Common Syntax Issues',
+                        checks: [
+                            {
+                                regex: /\bvar\b\s+\w+\s*=/,
+                                message: 'Usage of var for variable declaration (consider let/const instead)'
+                            },
+                            {
+                                regex: /(\b\w+\b)\s*\(/g,
+                                message: (match, code) => {
+                                    const predef = [
+                                        'console', 'log', 'window', 'document', 'setTimeout',
+                                        'clearTimeout', 'fetch', 'Promise', 'Map', 'Set'
+                                    ];
+                                    const functionName = match[1];
+                                    if (!predef.includes(functionName) && !new RegExp(`\\b(?:var|let|const)\\s+${functionName}\\b`).test(code)) {
+                                        return `Possible undefined function or variable '${functionName}'`;
+                                    }
+                                    return null;
+                                }
+                            }
+                        ]
+                    }
+                ];
+
+                analyses.forEach(analysis => {
+                    const matchedChecks = analysis.checks.filter(check => {
+                        const regex = check.regex;
+                        const match = regex.exec(code);
+                        if (match) {
+                            if (typeof check.message === 'function') {
+                                const message = check.message(match, code);
+                                return message ? { match, message } : null;
+                            }
+                            return { match, message: check.message };
+                        }
+                        return null;
+                    });
+
+                    if (matchedChecks.length > 0) {
+                        this.displayWarning(`${analysis.name}:`);
+                        matchedChecks.forEach(check =>
+                            this.displayWarning(`  • ${check.message}`)
+                        );
+                    }
+                });
+            }
+
+            displayError(message) {
+                const errorElement = document.createElement('div');
+                errorElement.classList.add('error');
+                errorElement.textContent = message;
+                this.resultsContainer.appendChild(errorElement);
+            }
+
+            displayWarning(message) {
+                const warningElement = document.createElement('div');
+                warningElement.classList.add('warning');
+                warningElement.textContent = message;
+                this.resultsContainer.appendChild(warningElement);
+            }
+
+            displaySuccess(message) {
+                const successElement = document.createElement('div');
+                successElement.classList.add('success');
+                successElement.textContent = message;
+                this.resultsContainer.appendChild(successElement);
+            }
+        }
+
+        // Initialize the validator
+        new ComprehensiveSyntaxValidator();
+
+    </script>
+</body>
+</html>
