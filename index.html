@@ -413,7 +413,7 @@ body:not(.dark-mode) #created-by {
 
         <h4 id="created-by" style="text-align: center; color: #777777a4;">Create By Houssam Ghmari & claude </h4>
         <h1> AUREL&nbsp; &nbsp;JavaScript Checker</h1>
-        <h4 id="created-by" style="text-align: center; color: rgba(255,255,255,0.34);">AUREL Can make mistakes<br>V 1 . 0</h4>
+        <h4 id="created-by" style="text-align: center; color: rgba(255,255,255,0.34);">AUREL Can make mistakes<br>V 1 . 5</h4>
         <br>
         <br>
         <!-- Legend Section -->
@@ -433,177 +433,234 @@ body:not(.dark-mode) #created-by {
         <button id="validateBtn" class="validate-btn">Check Your Code</button>
         
         <div id="syntaxResults" class="result-container"></div>
-    </div>
-    <div id="ftr">
-
-    </div>
+        <footer>
+            <div style="text-align: center; margin-top: 50px; padding: 20px; background: var(--bg-secondary); border-radius: 8px; color: var(--text-primary); font-family: var(--font-primary);">
+                <p>Contact Me:</p>
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
+                    <a href="https://www.linkedin.com/in/houssam-ghmari980/" target="_blank" style="text-decoration: none; color: var(--text-accent);">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" style="width: 30px; height: 30px; vertical-align: middle;"> LinkedIn
+                    </a>
+                    <a href="https://github.com/houssam980" target="_blank" style="text-decoration: none; color: var(--text-accent);">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" style="width: 30px; height: 30px; vertical-align: middle;"> GitHub
+                    </a>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px;">&copy; 2024 Houssam Ghmari. All Rights Reserved.</p>
+            </div>
+        </footer>
+        
+    
+    <!-- Include Font Awesome for social media icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    
 
     <script>
-        class ComprehensiveSyntaxValidator {
-            constructor() {
-                this.codeInput = document.getElementById('codeInput');
-                this.validateBtn = document.getElementById('validateBtn');
-                this.resultsContainer = document.getElementById('syntaxResults');
+class ComprehensiveSyntaxValidator {
+    constructor() {
+        // Establish essential DOM element references
+        this.codeInput = document.getElementById('codeInput');
+        this.validateBtn = document.getElementById('validateBtn');
+        this.resultsContainer = document.getElementById('syntaxResults');
 
-                this.validateBtn.addEventListener('click', () => this.validateCode());
-            }
+        // Attach event listener for validation
+        this.validateBtn.addEventListener('click', () => this.validateCode());
+    }
 
-            validateCode() {
-                // Clear previous results
-                this.resultsContainer.innerHTML = '';
+    validateCode() {
+        // Reset previous validation results
+        this.resultsContainer.innerHTML = '';
 
-                const code = this.codeInput.value.trim();
-                if (!code) {
-                    this.displayError('No code provided for validation.');
-                    return;
-                }
-
-                try {
-                    // JSHINT configuration
-                    JSHINT(code, {
-                        esversion: 12, // Latest ECMAScript version
-                        browser: true,
-                        node: true,
-                        devel: true,
-                        asi: false,
-                        bitwise: true,
-                        curly: true,
-                        eqeqeq: true,
-                        forin: true,
-                        freeze: true,
-                        futurehostile: true,
-                        latedef: true,
-                        maxcomplexity: 10,
-                        maxdepth: 4,
-                        maxlen: 120,
-                        maxparams: 4,
-                        noarg: true,
-                        nocomma: true,
-                        nonew: true,
-                        predef: [
-                            'window', 'document', 'console',
-                            'setTimeout', 'clearTimeout',
-                            'Promise', 'fetch', 'Map', 'Set'
-                        ]
-                    });
-
-                    if (JSHINT.errors.length === 0) {
-                        this.displaySuccess('✓ Syntax is completely valid!');
-                    } else {
-                        JSHINT.errors.forEach(error => {
-                            if (error) {
-                                this.displayError(`Line ${error.line}: ${error.reason}`);
-                            }
-                        });
-                    }
-
-                    // Perform detailed analysis
-                    this.performDetailedAnalysis(code);
-                } catch (e) {
-                    this.displayError(`Unexpected validation error: ${e.message}`);
-                }
-            }
-
-            performDetailedAnalysis(code) {
-                const analyses = [
-                    {
-                        name: 'ES6+ Feature Usage',
-                        checks: [
-                            { regex: /class\s+\w+/, message: 'ES6 class detected' },
-                            { regex: /=>\s*{/, message: 'Arrow function usage found' },
-                            { regex: /const\s+\w+\s*=/, message: 'Const variable declaration' },
-                            { regex: /let\s+\w+\s*=/, message: 'Let variable declaration detected' }
-                        ]
-                    },
-                    {
-                        name: 'Improper Console Log Usage',
-                        checks: [
-                            {
-                                regex: /console\.log\((.*=.*)\)/,
-                                message: 'Assignment detected within console.log(). This might be unintended or unclear.'
-                            }
-                        ]
-                    },
-                    {
-                        name: 'Potential Performance Concerns',
-                        checks: [
-                            { regex: /\.forEach\s*\(/, message: 'Potential performance issue with forEach' },
-                            { regex: /eval\s*\(/, message: 'Dangerous eval() usage detected' }
-                        ]
-                    },
-                    {
-                        name: 'Common Syntax Issues',
-                        checks: [
-                            {
-                                regex: /\bvar\b\s+\w+\s*=/,
-                                message: 'Usage of var for variable declaration (consider let/const instead)'
-                            },
-                            {
-                                regex: /(\b\w+\b)\s*\(/g,
-                                message: (match, code) => {
-                                    const predef = [
-                                        'console', 'log', 'window', 'document', 'setTimeout',
-                                        'clearTimeout', 'fetch', 'Promise', 'Map', 'Set'
-                                    ];
-                                    const functionName = match[1];
-                                    if (!predef.includes(functionName) && !new RegExp(`\\b(?:var|let|const)\\s+${functionName}\\b`).test(code)) {
-                                        return `Possible undefined function or variable '${functionName}'`;
-                                    }
-                                    return null;
-                                }
-                            }
-                        ]
-                    }
-                ];
-
-                analyses.forEach(analysis => {
-                    const matchedChecks = analysis.checks.filter(check => {
-                        const regex = check.regex;
-                        const match = regex.exec(code);
-                        if (match) {
-                            if (typeof check.message === 'function') {
-                                const message = check.message(match, code);
-                                return message ? { match, message } : null;
-                            }
-                            return { match, message: check.message };
-                        }
-                        return null;
-                    });
-
-                    if (matchedChecks.length > 0) {
-                        this.displayWarning(`${analysis.name}:`);
-                        matchedChecks.forEach(check =>
-                            this.displayWarning(`  • ${check.message}`)
-                        );
-                    }
-                });
-            }
-
-            displayError(message) {
-                const errorElement = document.createElement('div');
-                errorElement.classList.add('error');
-                errorElement.textContent = message;
-                this.resultsContainer.appendChild(errorElement);
-            }
-
-            displayWarning(message) {
-                const warningElement = document.createElement('div');
-                warningElement.classList.add('warning');
-                warningElement.textContent = message;
-                this.resultsContainer.appendChild(warningElement);
-            }
-
-            displaySuccess(message) {
-                const successElement = document.createElement('div');
-                successElement.classList.add('success');
-                successElement.textContent = message;
-                this.resultsContainer.appendChild(successElement);
-            }
+        // Extract and validate code input
+        const code = this.codeInput.value.trim();
+        if (!code) {
+            this.displayError('No code provided for validation.');
+            return;
         }
 
-        // Initialize the validator
-        new ComprehensiveSyntaxValidator();
+        try {
+            // Execute comprehensive validation sequence
+            this.checkSpellingErrors(code);
+            this.runJSHintValidation(code);
+            this.performDetailedAnalysis(code);
+        } catch (e) {
+            this.displayError(`Unexpected validation error: ${e.message}`);
+        }
+    }
 
+    checkSpellingErrors(code) {
+        const spellingErrors = [
+            { 
+                regex: /\b(cnsole|conole)\.lg\s*\(/g, 
+                message: 'Spelling Error: Incorrect console.log syntax',
+                suggestion: 'console.log'
+            },
+            { 
+                regex: /console\.lg\s*\(/g, 
+                message: 'Spelling Error: Incorrect console method',
+                suggestion: 'console.log'
+            }
+        ];
+
+        spellingErrors.forEach(error => {
+            const matches = code.match(error.regex);
+            if (matches) {
+                matches.forEach(match => {
+                    this.displayError(`
+                        ${error.message}
+                        Found: ${match}
+                        Suggested Correction: ${error.suggestion}
+                    `);
+                });
+            }
+        });
+    }
+
+    runJSHintValidation(code) {
+        // Configure comprehensive JSHINT validation
+        JSHINT(code, {
+            esversion: 12,
+            browser: true,
+            node: true,
+            devel: true,
+            asi: false,
+            bitwise: true,
+            curly: true,
+            eqeqeq: true,
+            forin: true,
+            freeze: true,
+            futurehostile: true,
+            latedef: true,
+            maxcomplexity: 10,
+            maxdepth: 4,
+            maxlen: 120,
+            maxparams: 4,
+            noarg: true,
+            nocomma: true,
+            nonew: true,
+            predef: [
+                'window', 'document', 'console',
+                'setTimeout', 'clearTimeout',
+                'Promise', 'fetch', 'Map', 'Set'
+            ]
+        });
+
+        // Process JSHINT validation results
+        if (JSHINT.errors.length === 0) {
+            this.displaySuccess('✓ Syntax is completely valid!');
+        } else {
+            JSHINT.errors.forEach(error => {
+                if (error) {
+                    this.displayError(`Line ${error.line}: ${error.reason}`);
+                }
+            });
+        }
+    }
+
+    performDetailedAnalysis(code) {
+        const analyses = [
+            {
+                name: 'Console.log Usage',
+                checks: [
+                    {
+                        regex: /console\.log\s*\(/g,
+                        message: (match) => {
+                            const logLine = code.slice(match.index).split('\n')[0];
+                            
+                            if (/console\.log\s*\(\s*\)/.test(logLine)) {
+                                return 'Empty console.log() detected - this will log undefined';
+                            }
+                            
+                            return null;
+                        }
+                    }
+                ]
+            },
+            {
+                name: 'ES6+ Feature Usage',
+                checks: [
+                    { regex: /class\s+\w+/, message: 'ES6 class detected' },
+                    { regex: /=>\s*{/, message: 'Arrow function usage found' },
+                    { regex: /const\s+\w+\s*=/, message: 'Const variable declaration' },
+                    { regex: /let\s+\w+\s*=/, message: 'Let variable declaration detected' }
+                ]
+            },
+            {
+                name: 'Potential Performance Concerns',
+                checks: [
+                    { 
+                        regex: /\.forEach\s*\(/,
+                        message: 'Potential performance issue with forEach (consider using .map() or .filter())' 
+                    },
+                    { 
+                        regex: /eval\s*\(/,
+                        message: 'Dangerous eval() usage detected - avoid for security reasons' 
+                    }
+                ]
+            },
+            {
+                name: 'Common Syntax Issues',
+                checks: [
+                    {
+                        regex: /\bvar\b\s+\w+\s*=/,
+                        message: 'Usage of var for variable declaration (prefer let/const)'
+                    }
+                ]
+            }
+        ];
+
+        analyses.forEach(analysis => {
+            const matchedChecks = analysis.checks.filter(check => {
+                const regex = check.regex;
+                const matches = [];
+                let match;
+
+                while ((match = regex.exec(code)) !== null) {
+                    const validationResult = typeof check.message === 'function' 
+                        ? check.message(match) 
+                        : check.message;
+                    
+                    if (validationResult) {
+                        matches.push({ message: validationResult });
+                    }
+                }
+
+                return matches.length > 0 ? matches : null;
+            });
+
+            if (matchedChecks.length > 0) {
+                this.displayWarning(`${analysis.name}:`);
+                matchedChecks.forEach(checks => 
+                    checks.forEach(check => 
+                        this.displayWarning(`  • ${check.message}`)
+                    )
+                );
+            }
+        });
+    }
+
+    displayError(message) {
+        const errorElement = document.createElement('div');
+        errorElement.classList.add('error');
+        errorElement.textContent = message;
+        this.resultsContainer.appendChild(errorElement);
+    }
+
+    displayWarning(message) {
+        const warningElement = document.createElement('div');
+        warningElement.classList.add('warning');
+        warningElement.textContent = message;
+        this.resultsContainer.appendChild(warningElement);
+    }
+
+    displaySuccess(message) {
+        const successElement = document.createElement('div');
+        successElement.classList.add('success');
+        successElement.textContent = message;
+        this.resultsContainer.appendChild(successElement);
+    }
+}
+
+// Initialize the validator when the script loads
+new ComprehensiveSyntaxValidator();
     </script>
 
     <script>
