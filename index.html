@@ -454,169 +454,165 @@ body:not(.dark-mode) #created-by {
     
 
     <script>
-    class ComprehensiveSyntaxValidator {
-            constructor() {
-                this.codeInput = document.getElementById('codeInput');
-                this.validateBtn = document.getElementById('validateBtn');
-                this.resultsContainer = document.getElementById('syntaxResults');
+class ComprehensiveSyntaxValidator {
+    constructor() {
+        this.codeInput = document.getElementById('codeInput');
+        this.validateBtn = document.getElementById('validateBtn');
+        this.resultsContainer = document.getElementById('syntaxResults');
 
-                this.validateBtn.addEventListener('click', () => this.validateCode());
+        this.validateBtn.addEventListener('click', () => this.validateCode());
+    }
+
+    validateCode() {
+        // Clear previous results
+        this.resultsContainer.innerHTML = '';
+
+        const code = this.codeInput.value.trim();
+        if (!code) {
+            this.displayError('No code provided for validation.');
+            return;
+        }
+
+        try {
+            // Check for user-defined functions
+            const userFunctionRegex = /\bfunction\b\s+[a-zA-Z_$][0-9a-zA-Z_$]*\s*\(/;
+            if (userFunctionRegex.test(code)) {
+                this.displayError("You\'ve Used A function Which is Not Allowed :( ");
+                return;
             }
 
-            validateCode() {
-                // Clear previous results
-                this.resultsContainer.innerHTML = '';
+            // JSHINT configuration
+            JSHINT(code, {
+                esversion: 12, // Latest ECMAScript version
+                browser: true,
+                node: true,
+                devel: true,
+                asi: false,
+                bitwise: true,
+                curly: true,
+                eqeqeq: true,
+                forin: true,
+                freeze: true,
+                futurehostile: true,
+                latedef: true,
+                maxcomplexity: 10,
+                maxdepth: 4,
+                maxlen: 120,
+                maxparams: 4,
+                noarg: true,
+                nocomma: true,
+                nonew: true,
+                predef: [
+                    'window', 'document', 'console',
+                    'setTimeout', 'clearTimeout',
+                    'Promise', 'fetch', 'Map', 'Set'
+                ]
+            });
 
-                const code = this.codeInput.value.trim();
-                if (!code) {
-                    this.displayError('No code provided for validation.');
-                    return;
-                }
-
-                try {
-                    // JSHINT configuration
-                    JSHINT(code, {
-                        esversion: 12, // Latest ECMAScript version
-                        browser: true,
-                        node: true,
-                        devel: true,
-                        asi: false,
-                        bitwise: true,
-                        curly: true,
-                        eqeqeq: true,
-                        forin: true,
-                        freeze: true,
-                        futurehostile: true,
-                        latedef: true,
-                        maxcomplexity: 10,
-                        maxdepth: 4,
-                        maxlen: 120,
-                        maxparams: 4,
-                        noarg: true,
-                        nocomma: true,
-                        nonew: true,
-                        predef: [
-                            'window', 'document', 'console',
-                            'setTimeout', 'clearTimeout',
-                            'Promise', 'fetch', 'Map', 'Set'
-                        ]
-                    });
-
-                    if (JSHINT.errors.length === 0) {
-                        this.displaySuccess('✓ Syntax is completely valid!');
-                    } else {
-                        JSHINT.errors.forEach(error => {
-                            if (error) {
-                                this.displayError(`Line ${error.line}: ${error.reason}`);
-                            }
-                        });
-                    }
-
-                    // Perform detailed analysis
-                    this.performDetailedAnalysis(code);
-                } catch (e) {
-                    this.displayError(`Unexpected validation error: ${e.message}`);
-                }
-            }
-
-            performDetailedAnalysis(code) {
-                const analyses = [
-                    {
-                        name: 'ES6+ Feature Usage',
-                        checks: [
-                            { regex: /class\s+\w+/, message: 'ES6 class detected' },
-                            { regex: /=>\s*{/, message: 'Arrow function usage found' },
-                            { regex: /const\s+\w+\s*=/, message: 'Const variable declaration' },
-                            { regex: /let\s+\w+\s*=/, message: 'Let variable declaration detected' }
-                        ]
-                    },
-                    {
-                        name: 'Improper Console Log Usage',
-                        checks: [
-                            {
-                                regex: /console\.log\((.*=.*)\)/,
-                                message: 'Assignment detected within console.log(). This might be unintended or unclear.'
-                            }
-                        ]
-                    },
-                    {
-                        name: 'Potential Performance Concerns',
-                        checks: [
-                            { regex: /\.forEach\s*\(/, message: 'Potential performance issue with forEach' },
-                            { regex: /eval\s*\(/, message: 'Dangerous eval() usage detected' }
-                        ]
-                    },
-                    {
-                        name: 'Common Syntax Issues',
-                        checks: [
-                            {
-                                regex: /\bvar\b\s+\w+\s*=/,
-                                message: 'Usage of var for variable declaration (consider let/const instead)'
-                            },
-                            {
-                                regex: /(\b\w+\b)\s*\(/g,
-                                message: (match, code) => {
-                                    const predef = [
-                                        'console','console.log', 'log', 'window', 'document', 'setTimeout',
-                                        'clearTimeout', 'fetch', 'Promise', 'Map', 'Set'
-                                    ];
-                                    if (!predef){
-                                        return `Possible undefined function or variable`;
-                                    }
-                                    return null;
-                                }
-                            }
-                        ]
-                    }
-                ];
-
-                analyses.forEach(analysis => {
-                    const matchedChecks = analysis.checks.filter(check => {
-                        const regex = check.regex;
-                        const match = regex.exec(code);
-                        if (match) {
-                            if (typeof check.message === 'function') {
-                                const message = check.message(match, code);
-                                return message ? { match, message } : null;
-                            }
-                            return { match, message: check.message };
-                        }
-                        return null;
-                    });
-
-                    if (matchedChecks.length > 0) {
-                        this.displayWarning(`${analysis.name}:`);
-                        matchedChecks.forEach(check =>
-                            this.displayWarning(`  • ${check.message}`)
-                        );
+            if (JSHINT.errors.length === 0) {
+                this.displaySuccess('✓ Syntax is completely valid!');
+            } else {
+                JSHINT.errors.forEach(error => {
+                    if (error) {
+                        this.displayError(`Line ${error.line}: ${error.reason}`);
                     }
                 });
             }
 
-            displayError(message) {
-                const errorElement = document.createElement('div');
-                errorElement.classList.add('error');
-                errorElement.textContent = message;
-                this.resultsContainer.appendChild(errorElement);
-            }
-
-            displayWarning(message) {
-                const warningElement = document.createElement('div');
-                warningElement.classList.add('warning');
-                warningElement.textContent = message;
-                this.resultsContainer.appendChild(warningElement);
-            }
-
-            displaySuccess(message) {
-                const successElement = document.createElement('div');
-                successElement.classList.add('success');
-                successElement.textContent = message;
-                this.resultsContainer.appendChild(successElement);
-            }
+            // Perform detailed analysis
+            this.performDetailedAnalysis(code);
+        } catch (e) {
+            this.displayError(`Unexpected validation error: ${e.message}`);
         }
+    }
 
-        // Initialize the validator
-        new ComprehensiveSyntaxValidator();
+    performDetailedAnalysis(code) {
+        const analyses = [
+            {
+                name: 'ES6+ Feature Usage',
+                checks: [
+                    { regex: /class\s+\w+/, message: 'ES6 class detected' },
+                    { regex: /=>\s*{/, message: 'Arrow function usage found' },
+                    { regex: /const\s+\w+\s*=\s*/, message: 'Const variable declaration' },
+                    { regex: /let\s+\w+\s*=\s*/, message: 'Let variable declaration detected' }
+                ]
+            },
+            {
+                name: 'Improper Console Log Usage',
+                checks: [
+                    {
+                        regex: /console\.log\((.*=.*)\)/,
+                        message: 'Assignment detected within console.log(). This might be unintended or unclear.'
+                    }
+                ]
+            },
+            {
+                name: 'Potential Performance Concerns',
+                checks: [
+                    { regex: /\.forEach\s*\(/, message: 'Potential performance issue with forEach' },
+                    { regex: /eval\s*\(/, message: 'Dangerous eval() usage detected' }
+                ]
+            },
+            {
+                name: 'Common Syntax Issues',
+                checks: [
+                    {
+                        regex: /\bvar\b\s+\w+\s*=/,
+                        message: 'Usage of var for variable declaration (consider let/const instead)'
+                    }
+                ]
+            }
+        ];
+
+        analyses.forEach(analysis => {
+            const matchedChecks = analysis.checks.filter(check => {
+                const regex = check.regex;
+                const match = regex.exec(code);
+
+                if (match) {
+                    if (typeof check.message === 'function') {
+                        const message = check.message(match, code);
+                        return message ? { match, message } : null;
+                    }
+
+                    return { match, message: check.message };
+                }
+                return null;
+            });
+
+            if (matchedChecks.length > 0) {
+                this.displayWarning(`${analysis.name}:`);
+                matchedChecks.forEach(check =>
+                    this.displayWarning(`  • ${check.message}`)
+                );
+            }
+        });
+    }
+
+    displayError(message) {
+        const errorElement = document.createElement('div');
+        errorElement.classList.add('error');
+        errorElement.textContent = message;
+        this.resultsContainer.appendChild(errorElement);
+    }
+
+    displayWarning(message) {
+        const warningElement = document.createElement('div');
+        warningElement.classList.add('warning');
+        warningElement.textContent = message;
+        this.resultsContainer.appendChild(warningElement);
+    }
+
+    displaySuccess(message) {
+        const successElement = document.createElement('div');
+        successElement.classList.add('success');
+        successElement.textContent = message;
+        this.resultsContainer.appendChild(successElement);
+    }
+}
+
+// Initialize the validator
+new ComprehensiveSyntaxValidator();
 
 
     </script>
