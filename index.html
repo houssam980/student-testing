@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>AUREL JavaScript Checker</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.5/jshint.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
@@ -116,6 +117,25 @@ h1 {
     box-shadow: 0 12px 24px rgba(88, 166, 255, 0.25);
 }
 
+
+
+#toBeBlured  {
+  
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+}
+
+body{-webkit-user-select:none;-moz-user-select:-moz-none;
+    -ms-user-select:none;user-select:none}
+
+
+#msg-show {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    text-align: center;
+}
 .validate-btn:hover {
     transform: translateY(-4px);
     box-shadow: 
@@ -407,9 +427,12 @@ body:not(.dark-mode) #created-by {
 
     </style>
 </head>
-<body>
-    <div class="validator-container">
-        <button id="toggleDarkMode" class="validate-btn" style="margin: 10px 0;">Toggle Dark Mode</button>
+<body aria-readonly="true" style="cursor: not-allowed;">
+    <div id="msg">
+        <h3 id="msg-show" style="background-color: #c9d1d9; color:black; padding: 50px; width: 550px; margin: auto; position:relative; top: 250px; z-index: 2; position: fixed; margin-right: 80px;" >Checker Is Not Available For Now</h3>
+    </div>
+    <div class="validator-container" id="toBeBlured">
+       
 
         <h4 id="created-by" style="text-align: center; color: #777777a4;">Create By Houssam Ghmari & claude </h4>
         <h1> AUREL&nbsp; &nbsp;JavaScript Checker</h1>
@@ -429,21 +452,13 @@ body:not(.dark-mode) #created-by {
             </div>
         </div>
         <br>
-        <textarea id="codeInput" placeholder="Your Code Goes Here ..."></textarea>
-        <button id="validateBtn" class="validate-btn">Check Your Code</button>
+        <textarea id="codeInput" placeholder="Your Code Goes Here ..." style="cursor: not-allowed; " readonly></textarea>
+        <button id="validateBtn" class="validate-btn" style="display: none;">Check Your Code</button>
         
         <div id="syntaxResults" class="result-container"></div>
         <footer>
             <div style="text-align: center; margin-top: 50px; padding: 20px; background: var(--bg-secondary); border-radius: 8px; color: var(--text-primary); font-family: var(--font-primary);">
                 <p>Contact Me:</p>
-                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
-                    <a href="https://www.linkedin.com/in/houssam-ghmari980/" target="_blank" style="text-decoration: none; color: var(--text-accent);">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" style="width: 30px; height: 30px; vertical-align: middle;"> LinkedIn
-                    </a>
-                    <a href="https://github.com/houssam980" target="_blank" style="text-decoration: none; color: var(--text-accent);">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" style="width: 30px; height: 30px; vertical-align: middle;"> GitHub
-                    </a>
-                </div>
                 <p style="margin-top: 15px; font-size: 14px;">&copy; 2024 Houssam Ghmari. All Rights Reserved.</p>
             </div>
         </footer>
